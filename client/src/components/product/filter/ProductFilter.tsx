@@ -1,19 +1,31 @@
 import { useEffect, useState } from "react";
 import type { ProductsFilterProps } from "../../../types/product";
-import "./ProductsFilter.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap-icons/font/bootstrap-icons.css";
-import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import "./ProductFilter.css";
 import {
-  ArrowDownShort,
   ArrowDownSquare,
-  ArrowUpShort,
   ArrowUpSquare,
+  Box,
+  FunnelFill,
+  Search,
+  XCircle,
 } from "react-bootstrap-icons";
+import { useLocation, useNavigate } from "react-router";
+import { useProductSearch } from "../../../contexts/ProductSearchContext";
 
 function ProductsFilter({ filters }: ProductsFilterProps) {
-  const [showFilters, setShowFilters] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [showFilters, setShowFilters] = useState(false);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const { suggestions, resetSearch } = useProductSearch();
+
+  useEffect(() => {
+    if (location.pathname === "/products") {
+      resetSearch();
+    }
+  }, [location.pathname, resetSearch]);
 
   useEffect(() => {
     const resize = () => {
@@ -23,6 +35,7 @@ function ProductsFilter({ filters }: ProductsFilterProps) {
     window.addEventListener("resize", resize);
     return () => window.removeEventListener("resize", resize);
   }, []);
+
   const {
     minPrice,
     minPriceChange,
@@ -32,6 +45,7 @@ function ProductsFilter({ filters }: ProductsFilterProps) {
     categoryChange,
     setSortByPrice,
     sortByPrice,
+    productName,
   } = filters;
 
   const resetFilters = () => {
@@ -50,8 +64,11 @@ function ProductsFilter({ filters }: ProductsFilterProps) {
   };
 
   return (
-    <>
-      <h3 className="mt-3 ms-2 ms-md-3">Filtrer par :</h3>
+    <div className="border border-2 shadow-lg rounded-4 p-3 mb-4 background-gradient">
+      <h3 className="card-title fs-3 mb-3 d-flex align-items-center gap-2">
+        <FunnelFill /> Filtrer
+      </h3>
+
       {isMobile && (
         <div className="text-center mb-3">
           <button
@@ -63,156 +80,139 @@ function ProductsFilter({ filters }: ProductsFilterProps) {
           </button>
         </div>
       )}
+
       {(showFilters || !isMobile) && (
-        <div className="d-flex ms-2 ms-md-3 mb-4 flex-md-column w-100">
-          <div className="filter-prices d-flex flex-column me-4 mt-md-2">
-            <h4 className="fw-bold">Prix</h4>
-            <div className="d-flex align-items-center w-100 mt-1 mt-md-2">
-              <p className="mt-2 me-1">De</p>
+        <div className="d-flex flex-wrap align-items-end gap-3">
+          <div
+            className="flex-grow-1 position-relative"
+            style={{ minWidth: "250px" }}
+          >
+            <label htmlFor="" className="form-label mb-1 fw-bold">
+              Rechercher
+            </label>
+            <div className="input-group">
+              <span className="input-group-text bg-light">
+                <Search />
+              </span>
               <input
-                className="w-50 mb-2"
+                type="text"
+                className="form-control"
+                value={productName ?? ""}
+                placeholder="Nom du produit..."
+                onChange={filters.productNameChange}
+              />
+              <button
+                className="btn text-white search-color fw-semibold"
+                type="button"
+              >
+                Rechercher
+              </button>
+            </div>
+
+            {suggestions && suggestions.length > 0 && (
+              <ul className="list-group position-absolute w-100 shadow-sm mt-1 z-3">
+                {suggestions.map((item) => (
+                  <li
+                    key={item.id}
+                    className="list-group-item list-group-item-action"
+                    onClick={() => navigate(`/product/${item.id}`)}
+                    onKeyDown={() => navigate(`/product/${item.id}`)}
+                  >
+                    <Box className="me-2" />
+                    {item.name}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          <div className="d-flex flex-column">
+            <label htmlFor="" className="form-label mb-1 fw-bold">
+              Prix min
+            </label>
+            <div className="input-group">
+              <input
                 type="number"
+                className="form-control"
                 value={minPrice ?? ""}
                 onChange={minPriceChange}
                 min={0}
               />
-              &nbsp;
-              <p className="mt-2">€</p>
-              <p className="mt-2 ms-2">à</p>
+              <span className="input-group-text fw-bold">€</span>
+            </div>
+          </div>
+
+          <div className="d-flex flex-column">
+            <label htmlFor="" className="form-label mb-1 fw-bold">
+              Prix max
+            </label>
+            <div className="input-group">
               <input
-                className="w-50 mb-2 ms-1"
                 type="number"
+                className="form-control"
                 value={maxPrice ?? ""}
                 onChange={maxPriceChange}
                 min={0}
               />
-              &nbsp;
-              <p className="mt-2">€</p>
+              <span className="input-group-text fw-bold">€</span>
             </div>
-            <div className="d-flex flex-column align-items-start">
-              <button
-                className={`btn btn-link text-decoration-none text-reset p-0 mb-1 mt-md-2 ${
-                  sortByPrice === "price-asc"
-                    ? "text-primary fw-bold text-decoration-underline"
-                    : ""
-                }`}
-                type="button"
-                onClick={() => {
-                  setSortByPrice("price-asc");
-                }}
-              >
-                Prix croissant{" "}
-                <ArrowUpShort
-                  size={sortByPrice === "price-asc" ? 30 : 25}
-                  className="product-filter-price-asc"
-                />
-              </button>
+          </div>
 
+          <div className="d-flex flex-column">
+            <label htmlFor="" className="form-label mb-1 fw-bold">
+              Trier
+            </label>
+            <div className="btn-group">
               <button
-                className={`btn btn-link text-decoration-none text-reset p-0 mb-3 ${
-                  sortByPrice === "price-desc"
-                    ? "text-primary fw-bold text-decoration-underline"
-                    : ""
-                }`}
                 type="button"
-                onClick={() => {
-                  setSortByPrice("price-desc");
-                }}
+                className={`btn btn-outline-danger fw-semibold ${sortByPrice === "price-asc" ? "active" : ""}`}
+                onClick={() => setSortByPrice("price-asc")}
               >
-                Prix décroissant
-                <ArrowDownShort
-                  size={sortByPrice === "price-desc" ? 30 : 25}
-                  className="product-filter-price-desc"
-                />
+                ↑ Croissant
+              </button>
+              <button
+                type="button"
+                className={`btn btn-outline-danger fw-semibold ${sortByPrice === "price-desc" ? "active" : ""}`}
+                onClick={() => setSortByPrice("price-desc")}
+              >
+                ↓ Décroissant
               </button>
             </div>
           </div>
-          <div className="d-flex row border-start border-black mx-2" />
-          <div className="me-2 w-75">
-            <h4 className="fw-bold mb-md-2">Catégories</h4>
-            <div className="dropdown mt-3">
-              <button
-                className="product-filter-dropdown btn dropdown-toggle w-100 border-black"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                {category === ""
-                  ? "Tous les produits"
-                  : category === "1"
-                    ? "Figurines"
-                    : category === "2"
-                      ? "Objets pratiques"
-                      : category === "3"
-                        ? "Jeux"
-                        : category === "4"
-                          ? "Divers"
-                          : "Tous les produits"}
-              </button>
-              <ul className="dropdown-menu">
-                <li>
-                  <button
-                    className="dropdown-item"
-                    type="button"
-                    onClick={() => categoryChange("")}
-                  >
-                    Tous les produits
-                  </button>
-                </li>
-                <li>
-                  <hr className="dropdown-divider" />
-                </li>
-                <li>
-                  <button
-                    className="dropdown-item"
-                    type="button"
-                    onClick={() => categoryChange("1")}
-                  >
-                    Figurines
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className="dropdown-item"
-                    type="button"
-                    onClick={() => categoryChange("2")}
-                  >
-                    Objets pratiques
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className="dropdown-item"
-                    type="button"
-                    onClick={() => categoryChange("3")}
-                  >
-                    Jeux
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className="dropdown-item"
-                    type="button"
-                    onClick={() => categoryChange("4")}
-                  >
-                    Divers
-                  </button>
-                </li>
-              </ul>
-            </div>
-            <div className="mt-3">
-              <button
-                className="btn btn-outline-danger mt-2"
-                type="button"
-                onClick={resetFilters}
-              >
-                Réinitialiser les filtres
-              </button>
-            </div>
+
+          <div
+            className="d-flex flex-column flex-grow-1"
+            style={{ minWidth: "200px" }}
+          >
+            <label htmlFor="" className="form-label mb-1 fw-bold">
+              Catégorie
+            </label>
+            <select
+              className="form-select"
+              value={category ?? ""}
+              onChange={(e) => categoryChange(e.target.value)}
+            >
+              <option value="">Toutes</option>
+              <option value="1">Figurines</option>
+              <option value="2">Objets pratiques</option>
+              <option value="3">Jeux</option>
+              <option value="4">Divers</option>
+            </select>
+          </div>
+
+          <div className="ms-auto">
+            <button
+              className="btn btn-danger mt-3"
+              type="button"
+              onClick={resetFilters}
+            >
+              <XCircle className="me-2" />
+              Réinitialiser
+            </button>
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
 

@@ -1,0 +1,7 @@
+.search-color {
+  background: var(--linear-gradient);
+}
+
+.background-gradient {
+  background: linear-gradient(to top, #f4ede4, transparent);
+}
