@@ -4,7 +4,7 @@ export type ProductType = {
   description: string;
   price: number;
   category_id: number;
-  images: Image[];
+  images: string[];
   category_name?: string;
   trend_product: string;
 };
@@ -31,8 +31,11 @@ export type ProductsFilterProps = {
 };
 
 export type ProductSearchContextType = {
+  products: ProductType[],
+  setProducts: React.Dispatch<React.SetStateAction<ProductType[]>>;
   productName: string;
   setProductName: (value: string) => void;
+  fetchAllProducts: () => Promise<void>;
   suggestions: ProductType[];
   setSuggestions: (suggestions: ProductType[]) => void;
   fetchSuggestions: (searchValue: string) => Promise<void>;

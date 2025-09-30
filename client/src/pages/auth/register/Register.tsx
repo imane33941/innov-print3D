@@ -2,13 +2,14 @@ import { StatusCodes } from "http-status-codes";
 import { useRef, useState } from "react";
 import type { FormEventHandler } from "react";
 import { Eye, EyeSlash, PersonPlusFill } from "react-bootstrap-icons";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import type {
   RegisterError,
   RegisterErrors,
 } from "../../../types/register-errors";
 import "./register.css";
+import pokeball_ronflex_1 from "/img/pokeball_ronflex_1.jpg";
 
 function Register() {
   const firstnameRef = useRef<HTMLInputElement>(null);
@@ -108,220 +109,182 @@ function Register() {
           S'inscrire
         </h2>
       </div>
-      <section className="register m-auto">
-        <form className="register-form my-5 container" onSubmit={createAccount}>
-          <h1 className="register-header-h1 mb-4">Nouveau client ?</h1>
-          <p>Saisissez le formulaire d'inscription :</p>
-          <div className="row">
-            <div className="form-group col-12 col-md-6">
-              <label className="register-label fw-bold" htmlFor="firstname">
-                Prénom :
-              </label>
-              <input
-                className="register-input form-control"
-                placeholder="Jérôme"
-                autoComplete="given-name"
-                name="firstname"
-                ref={firstnameRef}
-                type="text"
-                id="firstname"
-                onChange={(e) => {
-                  setErrors((prev) => ({ ...prev, firstname: "" }));
-                  onlyLetters(e, "firstname");
-                }}
-              />
-              {errors.firstname && (
-                <p className="text-danger">{errors.firstname}</p>
-              )}
+      <div className=" mx-auto min-vh-100 d-flex align-items-center justify-content-center" style={{
+        maxWidth: "1000px"
+      }}>
+        <div className=" shadow-lg rounded-4 w-100" >
+          <div className="row g-0">
+
+
+            {/* Right side form */}
+            <div className="login-right-side col-md-7 p-4 pt-md-5 rounded-start-4">
+              <h3 className="fw-bold text-center mb-3">Créer un compte</h3>
+              <p className="text-center text-muted mb-4">Inscrivez-vous pour découvrir nos offres exclusives</p>
+
+              <form onSubmit={createAccount}>
+                <div className="row g-3">
+                  <div className="col-md-6">
+                    <input
+                      type="text"
+                      className={`form-control rounded-3 form-control ${errors.firstname ? "is-invalid" : ""}`}
+                      placeholder="Prénom"
+                      ref={firstnameRef}
+                      onChange={(e) => onlyLetters(e, "firstname")}
+                    />
+                    <div className="invalid-feedback">{errors.firstname}</div>
+                  </div>
+
+                  <div className="col-md-6">
+                    <input
+                      type="text"
+                      className={`form-control rounded-3 form-control ${errors.lastname ? "is-invalid" : ""}`}
+                      placeholder="Nom"
+                      ref={lastnameRef}
+                      onChange={(e) => onlyLetters(e, "lastname")}
+                    />
+                    <div className="invalid-feedback">{errors.lastname}</div>
+                  </div>
+
+                  <div className="col-12">
+                    <input
+                      type="text"
+                      className={`form-control rounded-3 form-control ${errors.street ? "is-invalid" : ""}`}
+                      placeholder="Adresse"
+                      ref={streetRef}
+                      onChange={() => setErrors((prev) => ({ ...prev, street: "" }))}
+                    />
+                    <div className="invalid-feedback">{errors.street}</div>
+                  </div>
+
+                  <div className="col-md-6">
+                    <input
+                      type="text"
+                      className={`form-control rounded-3 form-control ${errors.zip_code ? "is-invalid" : ""}`}
+                      placeholder="Code postal"
+                      ref={zipCodeRef}
+                      onChange={() => setErrors((prev) => ({ ...prev, zip_code: "" }))}
+                    />
+                    <div className="invalid-feedback">{errors.zip_code}</div>
+                  </div>
+
+                  <div className="col-md-6">
+                    <input
+                      type="text"
+                      className={`form-control rounded-3 form-control ${errors.city ? "is-invalid" : ""}`}
+                      placeholder="Ville"
+                      ref={cityRef}
+                      onChange={(e) => onlyLetters(e, "city")}
+                    />
+                    <div className="invalid-feedback">{errors.city}</div>
+                  </div>
+
+                  <div className="col-12">
+                    <input
+                      type="text"
+                      className={`form-control rounded-3 form-control ${errors.country ? "is-invalid" : ""}`}
+                      placeholder="Pays"
+                      ref={countryRef}
+                      onChange={(e) => onlyLetters(e, "country")}
+                    />
+                    <div className="invalid-feedback">{errors.country}</div>
+                  </div>
+
+                  <div className="col-md-6">
+                    <input
+                      type="email"
+                      className={`form-control rounded-3 form-control ${errors.email ? "is-invalid" : ""}`}
+                      placeholder="Email"
+                      ref={emailRef}
+                      onChange={() => setErrors((prev) => ({ ...prev, email: "" }))}
+                    />
+                    <div className="invalid-feedback">{errors.email}</div>
+                  </div>
+
+                  <div className="col-md-6">
+                    <input
+                      type="tel"
+                      className={`form-control rounded-3 form-control ${errors.phone ? "is-invalid" : ""}`}
+                      placeholder="Téléphone"
+                      ref={phoneRef}
+                      onChange={() => setErrors((prev) => ({ ...prev, phone: "" }))}
+                    />
+                    <div className="invalid-feedback">{errors.phone}</div>
+                  </div>
+
+                  <div className="col-12">
+                    <div className="input-group rounded-start-3 overflow-hidden">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        className={`form-control form-control ${errors.password ? "is-invalid" : ""}`}
+                        placeholder="Mot de passe"
+                        ref={passwordRef}
+                        onChange={() => setErrors((prev) => ({ ...prev, password: "" }))}
+                      />
+                      <button
+                        type="button"
+                        className="btn btn-outline-secondary d-flex align-items-center justify-content-center rounded-end-3"
+                        onClick={() => setShowPassword((prev) => !prev)}
+                      >
+                        {showPassword ? <EyeSlash /> : <Eye />}
+                      </button>
+                      <div className="invalid-feedback">{errors.password}</div>
+                    </div>
+                  </div>
+
+                  <div className="col-12">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      className={`form-control rounded-3 form-control ${errors.confirmPassword ? "is-invalid" : ""}`}
+                      placeholder="Confirmer mot de passe"
+                      ref={confirmPasswordRef}
+                      onChange={() => setErrors((prev) => ({ ...prev, confirmPassword: "" }))}
+                    />
+                    <div className="invalid-feedback">{errors.confirmPassword}</div>
+                  </div>
+
+                  <div className="col-12 mt-4 text-center">
+                    <button
+                      type="submit"
+                      className="btn p-2 fw-semibold rounded-2 fs-5 shadow-sm mb-3 btn-danger w-100"
+                      style={{ transition: "all 0.3s" }}
+
+                    >
+                      Créer mon compte
+                    </button>
+                    <p className="text-center fw-medium">
+                      Vous avez dèjà un compte ?{" "}
+                      <Link
+                        to="/login"
+                        className="fw-bold text-decoration-none text-danger"
+                      >
+                        Connectez-vous
+                      </Link>
+                    </p>
+                  </div>
+
+                </div>
+              </form>
             </div>
-            <div className="form-group col-12 col-md-6">
-              <label className="register-label fw-bold" htmlFor="lastname">
-                Nom :
-              </label>
-              <input
-                className="register-input form-control"
-                placeholder="Dupont"
-                autoComplete="family-name"
-                name="lastname"
-                ref={lastnameRef}
-                type="text"
-                id="lastname"
-                onChange={(e) => {
-                  setErrors((prev) => ({ ...prev, lastname: "" }));
-                  onlyLetters(e, "lastname");
-                }}
-              />
-              {errors.lastname && (
-                <p className="text-danger">{errors.lastname}</p>
-              )}
-            </div>
-            <div className="form-group col-12 col-md-6">
-              <label className="register-label fw-bold" htmlFor="street">
-                Voie :
-              </label>
-              <input
-                className="register-input form-control"
-                placeholder="33 cours du médoc"
-                autoComplete="address-line1"
-                name="voie"
-                ref={streetRef}
-                type="text"
-                id="street"
-                onChange={() => setErrors((prev) => ({ ...prev, street: "" }))}
-              />
-              {errors.street && <p className="text-danger">{errors.street}</p>}
-            </div>
-            <div className="form-group col-12 col-md-6">
-              <label className="register-label fw-bold" htmlFor="zip_code">
-                Code postal :
-              </label>
-              <input
-                className="register-input form-control"
-                placeholder="33000"
-                autoComplete="postal-code"
-                name="zip_code"
-                ref={zipCodeRef}
-                type="text"
-                id="zip_code"
-                onChange={() =>
-                  setErrors((prev) => ({ ...prev, zip_code: "" }))
-                }
-              />
-              {errors.zip_code && (
-                <p className="text-danger">{errors.zip_code}</p>
-              )}
-            </div>
-            <div className="form-group col-12 col-md-6">
-              <label className="register-label fw-bold" htmlFor="city">
-                Commune :
-              </label>
-              <input
-                className="register-input form-control"
-                placeholder="Bordeaux"
-                autoComplete="address-level2"
-                name="city"
-                ref={cityRef}
-                type="text"
-                id="city"
-                onChange={(e) => {
-                  setErrors((prev) => ({ ...prev, city: "" }));
-                  onlyLetters(e, "city");
-                }}
-              />
-              {errors.city && <p className="text-danger">{errors.city}</p>}
-            </div>
-            <div className="form-group col-12 col-md-6">
-              <label className="register-label fw-bold" htmlFor="country">
-                Pays :
-              </label>
-              <input
-                className="register-input form-control"
-                placeholder="France"
-                autoComplete="country-name"
-                name="country"
-                ref={countryRef}
-                type="text"
-                id="country"
-                onChange={(e) => {
-                  setErrors((prev) => ({ ...prev, country: "" }));
-                  onlyLetters(e, "country");
-                }}
-              />
-              {errors.country && (
-                <p className="text-danger">{errors.country}</p>
-              )}
-            </div>
-            <div className="form-group col-12 col-md-6">
-              <label className="register-label fw-bold" htmlFor="email">
-                Email :
-              </label>
-              <input
-                className="register-input form-control"
-                placeholder="dupont@mail.com"
-                autoComplete="email"
-                name="email"
-                ref={emailRef}
-                type="email"
-                id="email"
-                onChange={() => setErrors((prev) => ({ ...prev, email: "" }))}
-              />
-              {errors.email && <p className="text-danger">{errors.email}</p>}
-            </div>
-            <div className="form-group col-12 col-md-6">
-              <label className="register-label fw-bold" htmlFor="phone">
-                Téléphone :
-              </label>
-              <input
-                className="register-input form-control"
-                placeholder="0655778899"
-                autoComplete="tel"
-                name="phone"
-                ref={phoneRef}
-                type="tel"
-                id="phone"
-                onChange={() => setErrors((prev) => ({ ...prev, phone: "" }))}
-              />
-              {errors.phone && <p className="text-danger">{errors.phone}</p>}
-            </div>
-            <div className="form-group col-12 col-md-6">
-              <label className="register-label fw-bold" htmlFor="password">
-                Créer votre mot de passe :
-              </label>
-              <div className="input-group">
-                <input
-                  className="register-input form-control"
-                  placeholder="••••••••"
-                  name="password"
-                  ref={passwordRef}
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  onChange={() =>
-                    setErrors((prev) => ({ ...prev, password: "" }))
-                  }
-                />
-                <button
-                  className="register-eye-btn rounded-2"
-                  type="button"
-                  onClick={() => setShowPassword((prev) => !prev)}
-                >
-                  {showPassword ? <EyeSlash size={20} /> : <Eye size={20} />}
-                </button>
-              </div>
-              {errors.password && (
-                <p className="text-danger">{errors.password}</p>
-              )}
-            </div>
-            <div className="form-group col-12 col-md-6">
-              <label
-                className="register-label fw-bold"
-                htmlFor="confirmPassword"
+            {/* Left side illustration */}
+            <div className="col-md-5 d-none d-md-block">
+              <div
+                className="login-left-side h-100 w-100 d-flex flex-column justify-content-evenly align-items-center text-white p-4 rounded-end-4"
               >
-                Confirmation du mot de passe :
-              </label>
-              <input
-                className="register-input form-control"
-                placeholder="••••••••"
-                name="confirmPassword"
-                ref={confirmPasswordRef}
-                type={showPassword ? "text" : "password"}
-                id="confirmPassword"
-                onChange={() =>
-                  setErrors((prev) => ({ ...prev, confirmPassword: "" }))
-                }
-              />
-              {errors.confirmPassword && (
-                <p className="text-danger">{errors.confirmPassword}</p>
-              )}
+                <div>
+                  <h2 className="fw-bold mb-3 text-center">Bienvenue sur InnovPrint3D</h2>
+                  <p className="mb-0 text-center">Rejoignez notre communauté et profitez des offres exclusives.</p>
+                </div>
+                <img
+                  src={pokeball_ronflex_1}
+                  alt="Illustration"
+                  className="rounded mt-4 object-fit-cover login-img w-100"
+                />
+              </div>
             </div>
-            <button
-              className="register-cta d-block py-2 fs-6 fw-bold w-75 rounded-4"
-              type="submit"
-            >
-              Créer mon compte
-            </button>
+
           </div>
-        </form>
-      </section>
+        </div>
+      </div>
     </>
   );
 }

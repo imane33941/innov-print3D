@@ -4,12 +4,11 @@ import "./ProductFilter.css";
 import {
   ArrowDownSquare,
   ArrowUpSquare,
-  Box,
   FunnelFill,
   Search,
   XCircle,
 } from "react-bootstrap-icons";
-import { useLocation, useNavigate } from "react-router";
+import { useLocation } from "react-router";
 import { useProductSearch } from "../../../contexts/ProductSearchContext";
 
 function ProductsFilter({ filters }: ProductsFilterProps) {
@@ -17,9 +16,8 @@ function ProductsFilter({ filters }: ProductsFilterProps) {
   const [showFilters, setShowFilters] = useState(false);
 
   const location = useLocation();
-  const navigate = useNavigate();
 
-  const { suggestions, resetSearch } = useProductSearch();
+  const { resetSearch } = useProductSearch();
 
   useEffect(() => {
     if (location.pathname === "/products") {
@@ -108,22 +106,6 @@ function ProductsFilter({ filters }: ProductsFilterProps) {
                 Rechercher
               </button>
             </div>
-
-            {suggestions && suggestions.length > 0 && (
-              <ul className="list-group position-absolute w-100 shadow-sm mt-1 z-3">
-                {suggestions.map((item) => (
-                  <li
-                    key={item.id}
-                    className="list-group-item list-group-item-action"
-                    onClick={() => navigate(`/product/${item.id}`)}
-                    onKeyDown={() => navigate(`/product/${item.id}`)}
-                  >
-                    <Box className="me-2" />
-                    {item.name}
-                  </li>
-                ))}
-              </ul>
-            )}
           </div>
 
           <div className="d-flex flex-column">

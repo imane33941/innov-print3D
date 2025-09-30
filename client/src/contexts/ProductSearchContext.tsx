@@ -3,6 +3,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useState,
 } from "react";
 import type { ProductSearchContextType, ProductType } from "../types/product";
@@ -14,8 +15,31 @@ const ProductSearchContext = createContext<ProductSearchContextType | null>(
 export const ProductSearchProvider = ({
   children,
 }: { children: ReactNode }) => {
+  const [products, setProducts] = useState<ProductType[]>([]);
   const [productName, setProductName] = useState<string>("");
   const [suggestions, setSuggestions] = useState<ProductType[]>([]);
+
+  // 🔹 Récupérer tous les produits depuis l’API
+  const fetchAllProducts = useCallback(async () => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/products`,
+      );
+      const data: ProductType[] = await response.json();
+      console.log(data);
+
+
+      setProducts(data);
+    } catch (err) {
+      console.error("Erreur lors du chargement des produits :", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchAllProducts()
+  }, [fetchAllProducts])
+
+
   const fetchSuggestions = useCallback(async (searchValue: string) => {
     try {
       setProductName(searchValue);
@@ -29,6 +53,7 @@ export const ProductSearchProvider = ({
         `${import.meta.env.VITE_API_URL}/api/products`,
       );
       const products: ProductType[] = await response.json();
+
 
       const filtered = products
         .filter((p) => p.name.toLowerCase().includes(searchValue.toLowerCase()))
@@ -53,6 +78,9 @@ export const ProductSearchProvider = ({
   return (
     <ProductSearchContext.Provider
       value={{
+        products,
+        setProducts,
+        fetchAllProducts,
         productName,
         setProductName,
         suggestions,

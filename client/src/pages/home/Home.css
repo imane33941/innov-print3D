@@ -11,7 +11,7 @@
 
 .home-browse-creation-btn,
 .home-browse-creation-btn:hover {
-  background-color: var(--btn-cta-home-color);
+  background: var(--linear-gradient);
   color: var(--font-secondary-color);
   width: 260px;
 }

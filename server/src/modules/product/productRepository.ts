@@ -8,7 +8,7 @@ class ProductRepository {
     const conditions = [];
     const values = [];
 
-    const { name, category_id, minPrice, maxPrice } = filters;
+    const { name, category_id, minPrice, maxPrice, trend_product } = filters;
 
     if (name) {
       conditions.push("p.name LIKE ?");
@@ -30,12 +30,17 @@ class ProductRepository {
       values.push(maxPrice);
     }
 
+    if (trend_product) {
+      conditions.push("p.trend_product IS NOT NULL AND p.trend_product != 'Aucun'");
+    }
+    
+
     const whereClause = conditions.length
       ? `WHERE ${conditions.join(" AND ")}`
       : "";
 
     const query = `
-      SELECT p.id, p.name, p.description, p.price, c.name AS category_name
+      SELECT p.id, p.name, p.description, p.price, c.name AS category_name, trend_product
       FROM product p
       LEFT JOIN category c ON p.category_id = c.id
       ${whereClause}

@@ -43,6 +43,7 @@ declare global {
     category_id?: string;
     minPrice?: number;
     maxPrice?: number;
+    trend_product?: string
   };
   type ProductManagement = {
     id: number;

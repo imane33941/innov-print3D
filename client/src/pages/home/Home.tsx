@@ -8,12 +8,14 @@ import {
 } from "react-bootstrap-icons";
 import { useNavigate } from "react-router";
 import GoogleLogo from "../../../img/icons/GoogleLogo.png";
-import pokeball_arcanin_1 from "../../../img/pokeball_arcanin_1.jpg";
 import CategoryProducts from "../../components/product/catProducts/CategoryProducts";
 import TrendProducts from "../../components/product/trendProducts/TrendProducts";
 import "./Home.css";
 import { Autoplay, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { useProductSearch } from "../../contexts/ProductSearchContext";
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const reviews = [
   {
@@ -60,6 +62,32 @@ const reviews = [
 
 function Home() {
   const navigate = useNavigate();
+  const { products } = useProductSearch();
+  const [visibleIndexes, setVisibleIndexes] = useState<number[]>([]);
+
+  const totalCells = 6;
+
+  useEffect(() => {
+    if (products.length === 0) return;
+
+    const initialIndexes = Array.from({ length: totalCells }, () =>
+      Math.floor(Math.random() * products.length)
+    );
+    setVisibleIndexes(initialIndexes);
+    
+    const interval = setInterval(() => {
+      setVisibleIndexes((prev) =>
+        prev.map((idx) => {
+          if (Math.random() > 0.5) {
+            return Math.floor(Math.random() * products.length);
+          }
+          return idx;
+        })
+      );
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [products]);
 
   const renderStars = (note: number) => {
     const stars = [];
@@ -98,12 +126,49 @@ function Home() {
           </button>
         </div>
 
-        <div className="home-choose-us  home-browse-creation-img-div w-100 d-flex justify-content-center align-items-center mt-md-0 w-100">
-          <img
-            src={pokeball_arcanin_1}
-            alt="Illustration"
-            className="home-browse-creation-img w-75 rounded-2 object-fit-cover my-5"
-          />
+        <div className="container home-choose-us  home-browse-creation-img-div">
+          <div className="row g-3 p-4 ">
+            {visibleIndexes.map((productIndex, i) => {
+              const product = products[productIndex];
+              return (
+                <div key={i} className="col-4">
+                  <div
+                    className="position-relative w-100 h-100 rounded overflow-hidden shadow-sm"
+                    style={{ aspectRatio: "1 / 1" }}
+                  >
+                    <AnimatePresence>
+                      <motion.img
+                        key={product.id}
+                        src={`${import.meta.env.VITE_API_URL}/uploads/products/${product.images[0]}`}
+                        alt={product.name}
+                        className="w-100 h-100 object-fit-cover rounded"
+                        initial={{
+                          opacity: 0,
+                          scale: 0.8,
+                          rotate: Math.random() * 10,
+                        }}
+                        animate={{
+                          opacity: 1,
+                          scale: 1,
+                          rotate: 0,
+                        }}
+                        exit={{
+                          opacity: 0,
+                          scale: 0.9,
+                          rotate: Math.random() * 10,
+                        }}
+                        transition={{
+                          duration: 0.8,
+                          ease: "easeInOut",
+                          delay: i * 0.1,
+                        }}
+                      />
+                    </AnimatePresence>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </section>
 
