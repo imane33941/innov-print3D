@@ -10,9 +10,21 @@ const Login = () => {
   const passwordRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(true);
 
   const navigate = useNavigate();
   const { login } = useAuth();
+
+  const validateForm = () => {
+    const email = emailRef.current?.value || '';
+    const password = passwordRef.current?.value || '';
+
+    if (!email.includes('@') || password.length === 0) {
+      setIsDisabled(true);
+    } else {
+      setIsDisabled(false);
+    }
+  };
 
   const handleSubmit: FormEventHandler = async (e) => {
     e.preventDefault();
@@ -30,7 +42,11 @@ const Login = () => {
         },
       );
 
-      if (!response.ok) throw new Error('Erreur lors de la connexion');
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.message || 'Erreur lors de la connexion');
+        return;
+      }
 
       const data = await response.json();
       login(data.user, data.token);
@@ -81,10 +97,10 @@ const Login = () => {
               </label>
               <input
                 ref={emailRef}
+                onChange={validateForm}
                 id="email"
                 type="email"
                 className="form-control form-control-lg rounded-3 shadow-sm"
-                required
                 placeholder="dupont@mail.com"
               />
             </div>
@@ -96,10 +112,10 @@ const Login = () => {
               <div className="input-group">
                 <input
                   ref={passwordRef}
+                  onChange={validateForm}
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   className="form-control form-control-lg rounded-start-3 shadow-sm"
-                  required
                   placeholder="••••••••"
                 />
 
@@ -118,6 +134,7 @@ const Login = () => {
               type="submit"
               className="btn btn-lg fw-semibold rounded-4 shadow-sm mb-3 btn-danger"
               aria-label="se connecter"
+              disabled={isDisabled}
             >
               Se connecter
             </button>

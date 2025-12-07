@@ -30,6 +30,19 @@ const hashPassword: RequestHandler = async (req, res, next) => {
 const login: RequestHandler = async (req, res, next) => {
   try {
     const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ message: 'Email et mot de passe sont obligatoires' });
+    }
+
+    if (typeof email !== 'string' || typeof password !== 'string') {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ message: 'Format invalide' });
+    }
+
     const user = await userRepository.findByEmail(email);
 
     if (user == null) {
