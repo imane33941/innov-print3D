@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import {
   BellFill,
   Box,
@@ -7,12 +7,12 @@ import {
   GlobeAmericasFill,
   PersonFill,
   Receipt,
-} from "react-bootstrap-icons";
-import { useAuth } from "../../../contexts/AuthContext";
-import type { AdminOrder } from "../../../types/order";
-import "./AdminOrders.css";
-import { useOrdersNotifs } from "../../../contexts/adminOrdersNotifications";
-import { StatusIcons, statusClass, statuss } from "./AdminOrdersStyles";
+} from 'react-bootstrap-icons';
+import { useAuth } from '../../../contexts/AuthContext';
+import type { AdminOrder } from '../../../types/order';
+import './AdminOrders.css';
+import { useOrdersNotifs } from '../../../contexts/adminOrdersNotifications';
+import { StatusIcons, statusClass, statuss } from './AdminOrdersStyles';
 
 const AdminOrders = () => {
   const [adminOrders, setAdimnOrders] = useState<AdminOrder[]>([]);
@@ -24,7 +24,7 @@ const AdminOrders = () => {
   const { unreadOrdersIds, markOrderRead } = useOrdersNotifs();
 
   useEffect(() => {
-    if (!token && currentUser?.role !== "admin") return;
+    if (!token && currentUser?.role !== 'admin') return;
     const fetchAdminOrders = async () => {
       try {
         const response = await fetch(
@@ -46,9 +46,9 @@ const AdminOrders = () => {
       await fetch(
         `${import.meta.env.VITE_API_URL}/api/admin/order/${orderId}`,
         {
-          method: "PUT",
+          method: 'PUT',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ status: newStatus }),
@@ -107,7 +107,7 @@ const AdminOrders = () => {
                   <div className="border rounded bg-gradient p-4 mb-4 shadow-lg">
                     <div className="row gy-4">
                       <div className="col-12 col-md-5 d-flex flex-column">
-                        <h4 className="text-dark mb-3 d-flex align-items-center">
+                        <h3 className="text-dark mb-3 d-flex align-items-center fs-4">
                           <span>Commande #{order.orderId}</span>
                           {unreadOrdersIds?.includes(order.orderId) && (
                             <span className="rounded-pill bg-danger text-light fs-6 px-3 py-1 ms-3">
@@ -115,12 +115,12 @@ const AdminOrders = () => {
                               <small className="ms-2">Non lue</small>
                             </span>
                           )}
-                        </h4>
+                        </h3>
                         <div className="d-flex flex-wrap gap-3 small">
                           <span className="border rounded-pill bg-light text-dark d-flex align-items-center gap-1 px-4 py-2 shadow-sm fw-bold">
                             <Box />
-                            {totalArticles}{" "}
-                            {totalArticles === 1 ? "article" : "articles"}
+                            {totalArticles}{' '}
+                            {totalArticles === 1 ? 'article' : 'articles'}
                           </span>
 
                           <span className="border rounded-pill bg-info text-dark fw-bold d-flex align-items-center gap-1 px-4 py-2 shadow-sm">
@@ -138,9 +138,9 @@ const AdminOrders = () => {
                         </div>
                       </div>
                       <div className="col-12 col-md-4 d-flex flex-column align-self-start">
-                        <h6 className="form-label fw-semibold small text-muted">
+                        <h4 className="form-label fw-semibold small text-muted fs-6">
                           Adresse de livraison
-                        </h6>
+                        </h4>
                         <div className="small text-muted mb-0 gap-3 gap-md-2 d-flex flex-column">
                           <div className="gap-1 d-flex align-items-center">
                             <PersonFill />
@@ -207,8 +207,8 @@ const AdminOrders = () => {
                     className="fw-semibold px-2 py-1 bg-transparent text-danger border-0"
                   >
                     {showDetails.includes(order.orderId)
-                      ? "Masquer les détails"
-                      : "Afficher les détails"}
+                      ? 'Masquer les détails'
+                      : 'Afficher les détails'}
                   </button>
                   {showDetails.includes(order.orderId) && (
                     <div className="border-top mt-2">
@@ -221,15 +221,17 @@ const AdminOrders = () => {
                             >
                               <div className="bg-white p-3 rounded shadow-sm h-100">
                                 <img
-                                  src={`${import.meta.env.VITE_API_URL}/uploads/products/${p.image}`}
+                                  src={`${
+                                    import.meta.env.VITE_API_URL
+                                  }/uploads/products/${p.image}`}
                                   alt={p.productName}
                                   className="img-fluid rounded mb-2 admin-order-product-img"
                                 />
                                 <div className="fw-medium small">
                                   <span className="text-dark">
                                     {p.quantity}
-                                  </span>{" "}
-                                  x{" "}
+                                  </span>{' '}
+                                  x{' '}
                                   <span className="text-dark">
                                     {p.productName}
                                   </span>

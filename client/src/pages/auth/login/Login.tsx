@@ -1,14 +1,14 @@
-import { type FormEventHandler, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router";
-import { useAuth } from "../../../contexts/AuthContext";
-import "./Login.css";
-import { Eye, EyeSlash, PersonFill } from "react-bootstrap-icons";
-import pokeball_ronflex_1 from "/img/pokeball_ronflex_1.jpg";
+import { type FormEventHandler, useRef, useState } from 'react';
+import { Link, useNavigate } from 'react-router';
+import { useAuth } from '../../../contexts/AuthContext';
+import './Login.css';
+import { Eye, EyeSlash, PersonFill } from 'react-bootstrap-icons';
+import pokeball_ronflex_1 from '/img/pokeball_ronflex_1.jpg';
 
 const Login = () => {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
@@ -21,8 +21,8 @@ const Login = () => {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/login`,
         {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             email: (emailRef.current as HTMLInputElement).value,
             password: (passwordRef.current as HTMLInputElement).value,
@@ -30,13 +30,13 @@ const Login = () => {
         },
       );
 
-      if (!response.ok) throw new Error("Erreur lors de la connexion");
+      if (!response.ok) throw new Error('Erreur lors de la connexion');
 
       const data = await response.json();
       login(data.user, data.token);
       navigate(`/cart/${data.user.id}`);
     } catch {
-      setError("Email ou mot de passe incorrect");
+      setError('Email ou mot de passe incorrect');
     }
   };
 
@@ -97,7 +97,7 @@ const Login = () => {
                 <input
                   ref={passwordRef}
                   id="password"
-                  type={showPassword ? "text" : "password"}
+                  type={showPassword ? 'text' : 'password'}
                   className="form-control form-control-lg rounded-start-3 shadow-sm"
                   required
                   placeholder="••••••••"
@@ -107,6 +107,7 @@ const Login = () => {
                   type="button"
                   className="btn btn-outline-secondary d-flex align-items-center justify-content-center rounded-end-3"
                   onClick={() => setShowPassword((prev) => !prev)}
+                  aria-label="afficher le mot de passe"
                 >
                   {showPassword ? <Eye /> : <EyeSlash />}
                 </button>
@@ -116,15 +117,17 @@ const Login = () => {
             <button
               type="submit"
               className="btn btn-lg fw-semibold rounded-4 shadow-sm mb-3 btn-danger"
+              aria-label="se connecter"
             >
               Se connecter
             </button>
 
             <p className="text-center fw-medium">
-              Pas encore de compte ?{" "}
+              Pas encore de compte ?{' '}
               <Link
                 to="/register"
                 className="fw-bold text-decoration-none text-danger"
+                aria-label="s'inscrire"
               >
                 Inscrivez-vous
               </Link>

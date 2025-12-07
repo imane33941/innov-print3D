@@ -37,25 +37,10 @@ CREATE TABLE image (
 CREATE TABLE cart (
   user_id INT NOT NULL,
   product_id INT NOT NULL,
-  quantity INT NOT NULL,
+  quantity INT UNSIGNED NOT NULL DEFAULT 1,
   PRIMARY KEY (user_id, product_id),
   CONSTRAINT fk_cart_user FOREIGN KEY (user_id) REFERENCES user (id),
   CONSTRAINT fk_cart_product FOREIGN KEY (product_id) REFERENCES product (id)
-);
-
-CREATE TABLE category_product (
-  product_id INT NOT NULL,
-  category_id INT NOT NULL,
-  CONSTRAINT fk_category_product_product FOREIGN KEY (product_id) REFERENCES product (id),
-  CONSTRAINT fk_category_product_category FOREIGN KEY (category_id) REFERENCES category (id)
-);
-
-CREATE TABLE favorite (
-  user_id INT NOT NULL,
-  product_id INT NOT  NULL,
-  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_favorite_user FOREIGN KEY (user_id) REFERENCES user (id),
-  CONSTRAINT fk_favorite_product FOREIGN KEY (product_id) REFERENCES product (id)
 );
 
 CREATE TABLE orders (
@@ -77,17 +62,6 @@ CREATE TABLE order_product (
   PRIMARY KEY (order_id, product_id),
   CONSTRAINT fk_order_product_order FOREIGN KEY (order_id) REFERENCES orders (id),
   CONSTRAINT fk_order_product_product FOREIGN KEY (product_id) REFERENCES product (id)
-);
-
-CREATE TABLE review (
-  id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  user_id INT NOT NULL,
-  product_id INT NOT NULL,
-  rating INT NOT NULL,
-  comment TEXT NULL DEFAULT NULL,
-  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_review_user FOREIGN KEY (user_id) REFERENCES user (id),
-  CONSTRAINT fk_review_product FOREIGN KEY (product_id) REFERENCES product (id)
 );
 
 INSERT INTO user (id, firstname, lastname, street, city, zip_code, country, email, phone, hashed_password, role)

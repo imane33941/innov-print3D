@@ -1,6 +1,6 @@
-import type { RequestHandler } from "express";
-import { StatusCodes } from "http-status-codes";
-import cartRepository from "./cartRepository";
+import type { RequestHandler } from 'express';
+import { StatusCodes } from 'http-status-codes';
+import cartRepository from './cartRepository';
 
 const add: RequestHandler = async (req, res, next) => {
   try {
@@ -23,7 +23,7 @@ const read: RequestHandler = async (req, res, next) => {
     if (Number.isNaN(userId)) {
       res
         .status(StatusCodes.BAD_REQUEST)
-        .json({ error: "Identifiant doit être un nombre" });
+        .json({ error: 'Identifiant doit être un nombre' });
       return;
     }
     const cart = await cartRepository.findByUserId(userId);
@@ -81,7 +81,7 @@ const validate: RequestHandler = async (req, res, next) => {
     if (Number.isNaN(userId) || Number.isNaN(productId)) {
       res
         .status(StatusCodes.BAD_REQUEST)
-        .json({ error: "Paramétres invalides" });
+        .json({ error: 'Paramétres invalides' });
       return;
     }
     next();

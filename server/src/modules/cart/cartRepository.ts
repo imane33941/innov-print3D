@@ -1,5 +1,5 @@
-import databaseClient from "../../../database/client";
-import type { Result, Rows } from "../../../database/client";
+import databaseClient from '../../../database/client';
+import type { Result, Rows } from '../../../database/client';
 
 class cartRepository {
   async add(userId: number, productId: number, quantity: number) {
@@ -30,7 +30,8 @@ class cartRepository {
       const [imageRows] = await databaseClient.query<Rows>(
         `SELECT path
          FROM image
-         WHERE product_id = ${product.productId}`,
+         WHERE product_id = ? LIMIT 1`,
+        [product.productId],
       );
 
       product.images = imageRows.map((img) => img.path);
@@ -41,7 +42,7 @@ class cartRepository {
 
   async update(userId: number, productId: number, quantity: number) {
     const [result] = await databaseClient.query<Result>(
-      "UPDATE cart SET quantity = ? WHERE user_id = ? AND product_id = ?",
+      'UPDATE cart SET quantity = ? WHERE user_id = ? AND product_id = ?',
       [quantity, userId, productId],
     );
     return result;
@@ -49,7 +50,7 @@ class cartRepository {
 
   async delete(userId: number, productId: number) {
     const [result] = await databaseClient.query<Result>(
-      "DELETE FROM cart WHERE user_id = ? AND product_id = ?",
+      'DELETE FROM cart WHERE user_id = ? AND product_id = ?',
       [userId, productId],
     );
     return result;

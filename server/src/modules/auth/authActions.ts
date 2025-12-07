@@ -1,8 +1,8 @@
-import argon2 from "argon2";
-import type { RequestHandler } from "express";
-import { StatusCodes } from "http-status-codes";
-import jwt from "jsonwebtoken";
-import userRepository from "../user/userRepository";
+import argon2 from 'argon2';
+import type { RequestHandler } from 'express';
+import { StatusCodes } from 'http-status-codes';
+import jwt from 'jsonwebtoken';
+import userRepository from '../user/userRepository';
 
 const hashingOptions = {
   type: argon2.argon2id,
@@ -35,12 +35,10 @@ const login: RequestHandler = async (req, res, next) => {
     if (user == null) {
       res
         .status(StatusCodes.UNPROCESSABLE_ENTITY)
-        .json({ message: "utilisateur introuvable" });
+        .json({ message: 'utilisateur introuvable' });
       return;
     }
-
     const verified = await argon2.verify(user.hashed_password, password);
-
     if (verified) {
       const { hashed_password, ...userWithoutHashedPassword } = user;
 
@@ -48,15 +46,13 @@ const login: RequestHandler = async (req, res, next) => {
         sub: user.id.toString(),
         role: user.role,
       };
-
       const token = await jwt.sign(
         myPayload,
         process.env.APP_SECRET as string,
         {
-          expiresIn: "1h",
+          expiresIn: '1h',
         },
       );
-
       res.json({
         token,
         user: userWithoutHashedPassword,
@@ -64,7 +60,7 @@ const login: RequestHandler = async (req, res, next) => {
     } else {
       res
         .status(StatusCodes.UNPROCESSABLE_ENTITY)
-        .json({ message: "Mot de passe incorrect" });
+        .json({ message: 'Mot de passe incorrect' });
     }
   } catch (err) {
     next(err);
@@ -73,16 +69,16 @@ const login: RequestHandler = async (req, res, next) => {
 
 const verifyToken: RequestHandler = (req, res, next) => {
   try {
-    const authorizationHeader = req.get("Authorization");
+    const authorizationHeader = req.get('Authorization');
 
     if (authorizationHeader == null) {
-      throw new Error("Token manquant");
+      throw new Error('Token manquant');
     }
 
-    const [type, token] = authorizationHeader.split(" ");
+    const [type, token] = authorizationHeader.split(' ');
 
-    if (type !== "Bearer") {
-      throw new Error("Type token invalide");
+    if (type !== 'Bearer') {
+      throw new Error('Type token invalide');
     }
 
     req.auth = jwt.verify(token, process.env.APP_SECRET as string) as MyPayload;
@@ -92,12 +88,12 @@ const verifyToken: RequestHandler = (req, res, next) => {
     console.error(err);
     res
       .status(StatusCodes.UNAUTHORIZED)
-      .json({ error: "Token invalide ou manquant" });
+      .json({ error: 'Token invalide ou manquant' });
   }
 };
 
 const isAdmin: RequestHandler = (req, res, next) => {
-  if (req.auth.role === "admin") {
+  if (req.auth.role === 'admin') {
     return next();
   }
   res
